@@ -55,6 +55,23 @@ class Note extends Database
         return $note;
     }
 
+    public static function getAll()
+    {
+        $notes = [];
+        $db = new Database();
+
+        $stm = $db->connect()->prepare("SELECT * FROM notes");
+        $stm->execute();
+
+        $results = $stm->fetchAll();
+
+        foreach ($results as $note) {
+            $notes[] = Note::createFromArray($note);
+        }
+
+        return $notes;
+    }
+
     public static function createFromArray($array): Note
     {
         $note = new Note($array["title"], $array["content"]);
