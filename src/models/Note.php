@@ -3,7 +3,6 @@
 namespace Ferre\AppNotes\Models;
 
 use Ferre\AppNotes\libs\Database;
-use PDO;
 
 class Note extends Database
 {
@@ -31,10 +30,10 @@ class Note extends Database
     public function update(): void
     {
         try {
-            $stm = $this->connect()->prepare("UPDATE note SET title = ?, content = ?, updated = NOW() WHERE uuid = ?");
-            $stm->bindParam(1, $this->getTitle());
-            $stm->bindParam(2, $this->getContent());
-            $stm->bindParam(3, $this->getUUID());
+            $stm = $this->connect()->prepare("UPDATE notes SET title = ?, content = ?, updated = NOW() WHERE uuid = ?");
+            $stm->bindParam(1, $this->title);
+            $stm->bindParam(2, $this->content);
+            $stm->bindParam(3, $this->uuid);
 
             $stm->execute();
 
@@ -43,21 +42,25 @@ class Note extends Database
         }
     }
 
-    public static function get(string $uuid): Note
+    public static function get(string $uuid): ?Note
     {
+        $note = null;
         $db = new Database();
 
         $stm = $db->connect()->prepare("SELECT * FROM notes WHERE uuid = ?");
         $stm->bindParam(1, $uuid);
+        $stm->execute();
 
-        $note = Note::createFromArray($stm->fetch(PDO::FETCH_ASSOC));
+        if ($stm->rowCount() > 0) {
+            $note = Note::createFromArray($stm->fetch());
+        }
 
         return $note;
     }
 
-    public static function getAll()
+    public static function getAll(): ?array
     {
-        $notes = [];
+        $notes = null;
         $db = new Database();
 
         $stm = $db->connect()->prepare("SELECT * FROM notes");
@@ -65,8 +68,10 @@ class Note extends Database
 
         $results = $stm->fetchAll();
 
-        foreach ($results as $note) {
-            $notes[] = Note::createFromArray($note);
+        if ($stm->rowCount() > 0) {
+            foreach ($results as $note) {
+                $notes[] = Note::createFromArray($note);
+            }
         }
 
         return $notes;
@@ -109,5 +114,4 @@ class Note extends Database
     {
         $this->content = $value;
     }
-
 }
