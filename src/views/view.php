@@ -1,5 +1,5 @@
 <?php
-use Ferre\AppNotes\Models\Note;
+use Ferre\AppNotes\models\Note;
 
 $title = $_POST["title"] ?? "";
 $content = $_POST["content"] ?? "";
@@ -8,6 +8,7 @@ $uuid = $_POST["id"] ?? "";
 if (isset($_POST["send"])) {
     if (empty($title) || empty($content)) {
         echo "Todos los campos son obligatorios";
+        $note = Note::get($_GET["id"]);
     } else {
         $note = Note::get($uuid);
 
@@ -30,13 +31,14 @@ if (isset($_POST["send"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View</title>
+    <link rel="stylesheet" href="src/views/resources/main.css">
 </head>
 <body>
+    <?php require "resources/navbar.php";?>
     <h1>View note</h1>
-
     <?php if ($note): ?>
-    <form action="?view=view&id= <?=$note->getUUID();?>" method="POST">
-        <input type="text" name="title" value=" <?=$note->getTitle();?> ">
+    <form action="?view=view&id=<?=$note->getUUID();?>" method="POST">
+        <input type="text" name="title" value="<?=$note->getTitle();?> ">
         <input type="hidden" name="id" value="<?=$note->getUUID() ?>">
         <textarea name="content" cols="30" rows="10"><?=$note->getContent();?>
         </textarea>

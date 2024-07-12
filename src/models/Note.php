@@ -60,7 +60,7 @@ class Note extends Database
 
     public static function getAll(): ?array
     {
-        $notes = null;
+        $notes = [];
         $db = new Database();
 
         $stm = $db->connect()->prepare("SELECT * FROM notes");

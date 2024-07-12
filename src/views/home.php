@@ -1,6 +1,6 @@
 <?php
 
-use Ferre\AppNotes\Models\Note;
+use Ferre\AppNotes\models\Note;
 
 $notes = Note::getAll();
 
@@ -12,15 +12,19 @@ $notes = Note::getAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>App - Notes</title>
+    <link rel="stylesheet" href="src/views/resources/main.css">
 </head>
 <body>
+    <?php require "resources/navbar.php" ?>
     <h1>Home</h1>
-    <?php foreach ($notes as $note): ?>
-       <a href="?view=view&id=<?=$note->getUUID();?>">
-        <divc class="note-preview">
-            <div class="title"><?=$note->getTitle();?></div>
-        </div>
-       </a>
-    <?php endforeach;?>
+    <div class="notes-container">
+        <?php foreach ($notes as $note): ?>
+           <a href="?view=view&id=<?=$note->getUUID();?>">
+            <div class="note-preview">
+                <div class="title"><?=$note->getTitle();?></div>
+            </div>
+           </a>
+        <?php endforeach;?>
+    </div>
 </body>
 </html>
